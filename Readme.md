@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Артём Евсяков](https://up.htmlacademy.ru/javascript/16/user/637603).
-* Наставник: `Неизвестно`.
+* Наставник: [Мурат Баркинхоев](https://htmlacademy.ru/profile/id186857).
 
 ---
 
