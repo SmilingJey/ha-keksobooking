@@ -1,5 +1,28 @@
 'use strict';
 
+var MOCK_CARD_TITLES = [
+  'Большая уютная квартира',
+  'Маленькая неуютная квартира',
+  'Огромный прекрасный дворец',
+  'Маленький ужасный дворец',
+  'Красивый гостевой домик',
+  'Некрасивый негостеприимный домик',
+  'Уютное бунгало далеко от моря',
+  'Неуютное бунгало по колено в воде'
+];
+
+var MOCK_CARD_PHOTOS = [
+  'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
+];
+
+var MOCK_CARD_IMAGE_COUNT = 8;
+var MOCK_CARD_ROOMS_COUNT_MIN = 1;
+var MOCK_CARD_ROOMS_COUNT_MAX = 5;
+var MOCK_CARD_PRICE_MIN = 1000;
+var MOCK_CARD_PRICE_MAX = 1000000;
+
 var LOCATION_Y_MIN = 130;
 var LOCATION_Y_MAX = 630;
 
@@ -33,31 +56,6 @@ var compareRandom = function () {
 };
 
 var generateMockCards = function (count) {
-  var MOCK_CARD_TITLES = [
-    'Большая уютная квартира',
-    'Маленькая неуютная квартира',
-    'Огромный прекрасный дворец',
-    'Маленький ужасный дворец',
-    'Красивый гостевой домик',
-    'Некрасивый негостеприимный домик',
-    'Уютное бунгало далеко от моря',
-    'Неуютное бунгало по колено в воде'
-  ];
-
-  var MOCK_CARD_PHOTOS = [
-    'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
-    'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
-    'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
-  ];
-
-  var MOCK_IMAGE_COUNT = 8;
-
-  var MOCK_ROOMS_COUNT_MIN = 1;
-  var MOCK_ROOMS_COUNT_MAX = 5;
-
-  var MOCK_PRICE_MIN = 1000;
-  var MOCK_PRICE_MAX = 1000000;
-
   var cards = [];
   for (var i = 0; i < count; i++) {
     var mapWidth = mapElement.offsetWidth;
@@ -67,14 +65,14 @@ var generateMockCards = function (count) {
 
     cards.push({
       author: {
-        avatar: 'img/avatars/user0' + (i % MOCK_IMAGE_COUNT + 1) + '.png'
+        avatar: 'img/avatars/user0' + (i % MOCK_CARD_IMAGE_COUNT + 1) + '.png'
       },
       offer: {
         title: MOCK_CARD_TITLES[i % MOCK_CARD_TITLES.length],
         address: locationX + ', ' + locationY,
-        price: getRandomInt(MOCK_PRICE_MIN, MOCK_PRICE_MAX),
+        price: getRandomInt(MOCK_CARD_PRICE_MIN, MOCK_CARD_PRICE_MAX),
         type: cardTypes[getRandomInt(0, cardTypes.length - 1)],
-        rooms: getRandomInt(MOCK_ROOMS_COUNT_MIN, MOCK_ROOMS_COUNT_MAX),
+        rooms: getRandomInt(MOCK_CARD_ROOMS_COUNT_MIN, MOCK_CARD_ROOMS_COUNT_MAX),
         guests: getRandomInt(GUESTS_COUNT_MIN, GUESTS_COUNT_MAX),
         checkin: CHECKIN_TIMES[getRandomInt(0, CHECKIN_TIMES.length - 1)],
         checkout: CHECKOUT_TIMES[getRandomInt(0, CHECKOUT_TIMES.length - 1)],
@@ -114,7 +112,6 @@ var renderMapPins = function (cards) {
 
 var renderMapCard = function (card) {
   var i;
-  var fragment;
 
   var mapCardTemplateElement = document.querySelector('#card')
     .content
@@ -143,14 +140,15 @@ var renderMapCard = function (card) {
   while (featuresElement.firstChild) {
     featuresElement.removeChild(featuresElement.firstChild);
   }
-  fragment = document.createDocumentFragment();
+
+  var fragmentFeatures = document.createDocumentFragment();
   for (i = 0; i < card.offer.features.length; i++) {
     var featureElement = document.createElement('li');
     featureElement.classList.add('popup__feature');
     featureElement.classList.add('popup__feature--' + card.offer.features[i]);
-    fragment.appendChild(featureElement);
+    fragmentFeatures.appendChild(featureElement);
   }
-  featuresElement.appendChild(fragment);
+  featuresElement.appendChild(fragmentFeatures);
 
   var descriptionElement = mapCardElement.querySelector('.popup__description');
   descriptionElement.textContent = card.offer.description;
@@ -160,13 +158,14 @@ var renderMapCard = function (card) {
   while (photosElement.firstChild) {
     photosElement.removeChild(photosElement.firstChild);
   }
-  fragment = document.createDocumentFragment();
+
+  var fragmentPhotos = document.createDocumentFragment();
   for (i = 0; i < card.offer.photos.length; i++) {
     var photoImgElement = photosImgElement.cloneNode();
     photoImgElement.src = card.offer.photos[i];
-    fragment.appendChild(photoImgElement);
+    fragmentPhotos.appendChild(photoImgElement);
   }
-  photosElement.appendChild(fragment);
+  photosElement.appendChild(fragmentPhotos);
 
   var avatarElement = mapCardElement.querySelector('.popup__avatar');
   avatarElement.src = card.author.avatar;
