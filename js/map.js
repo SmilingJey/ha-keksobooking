@@ -25,7 +25,7 @@ var getRandomInt = function (min, max) {
 };
 
 var getRandomBoolean = function () {
-  return Math.random() - 0.5;
+  return Math.random() >= 0.5;
 };
 
 var compareRandom = function () {
@@ -137,7 +137,7 @@ var renderMapCard = function (card) {
   capacityElement.textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
 
   var timeElement = mapCardElement.querySelector('.popup__text--time');
-  timeElement.ElementtextContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
+  timeElement.textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
 
   var featuresElement = mapCardElement.querySelector('.popup__features');
   while (featuresElement.firstChild) {
