@@ -1,5 +1,9 @@
 'use strict';
 
+var ESC_KEYCODE = 27;
+
+var MAIN_PIN_OFFSET_Y = 22;
+
 var MOCK_CARD_TITLES = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
@@ -41,7 +45,15 @@ var CardType = {
   flat: 'Квартира'
 };
 
+var pageState;
+
 var mapElement = document.querySelector('.map');
+var mapPinMainElement = document.querySelector('.map__pin--main');
+var adFormElement = document.querySelector('.ad-form');
+var fieldsetElements = document.querySelectorAll('fieldset');
+var inputElements = document.querySelectorAll('fieldset');
+var selectElements = document.querySelectorAll('fieldset');
+var addressInputElement = document.querySelector('input[name=address]');
 
 var getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max + 1 - min) + min);
@@ -89,33 +101,55 @@ var generateMockCards = function (count) {
   return cards;
 };
 
-var createMapPin = function (card) {
-  var pinTemplateElement = document.querySelector('#pin')
-    .content
-    .querySelector('.map__pin');
-  var pinElement = pinTemplateElement.cloneNode(true);
+var createMapPin = function (template, card) {
+  var pinElement = template.cloneNode(true);
   pinElement.style = 'left: ' + card.location.x + 'px; top: ' + card.location.y + 'px;';
   var pinImageElement = pinElement.querySelector('img');
   pinImageElement.src = card.author.avatar;
-  pinImageElement.alt = card.title;
+  pinImageElement.alt = card.offer.title;
+
+  pinElement.addEventListener('click', function () {
+    showMapCard(card);
+  });
+
   return pinElement;
 };
 
-var renderMapPins = function (cards) {
+var showMapPins = function (cards) {
   var mapPinsElement = document.querySelector('.map__pins');
+  var pinTemplateElement = document.querySelector('#pin')
+    .content
+    .querySelector('.map__pin');
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < cards.length; i++) {
-    fragment.appendChild(createMapPin(cards[i]));
+    fragment.appendChild(createMapPin(pinTemplateElement, cards[i]));
   }
   mapPinsElement.appendChild(fragment);
 };
 
-var renderMapCard = function (card) {
+var closeMapCard = function () {
+  var mapCardElement = document.querySelector('.map__card');
+  if (mapCardElement) {
+    mapElement.removeChild(mapCardElement);
+    document.removeEventListener('keydown', mapCardEscHandler);
+  }
+};
+
+var mapCardEscHandler = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeMapCard();
+  }
+};
+
+var showMapCard = function (card) {
   var i;
+
+  closeMapCard();
 
   var mapCardTemplateElement = document.querySelector('#card')
     .content
     .querySelector('.map__card');
+
   var mapCardElement = mapCardTemplateElement.cloneNode(true);
 
   var titleElement = mapCardElement.querySelector('.popup__title');
@@ -172,13 +206,60 @@ var renderMapCard = function (card) {
 
   var filtersContainerElement = document.querySelector('.map__filters-container');
   mapElement.insertBefore(mapCardElement, filtersContainerElement);
+
+  var closeButton = mapCardElement.querySelector('.popup__close');
+  closeButton.addEventListener('click', function () {
+    closeMapCard();
+  });
+  document.addEventListener('keydown', mapCardEscHandler);
 };
 
-var showMockCards = function () {
-  var cards = generateMockCards(8);
-  mapElement.classList.remove('map--faded');
-  renderMapPins(cards);
-  renderMapCard(cards[0]);
+var setPageState = function (active) {
+  pageState = active;
+
+  if (active) {
+    mapElement.classList.remove('map--faded');
+    adFormElement.classList.remove('ad-form--disabled');
+  } else {
+    mapElement.classList.add('map--faded');
+    adFormElement.classList.add('ad-form--disabled');
+  }
+
+  var i;
+  for (i = 0; i < fieldsetElements.length; i++) {
+    fieldsetElements[i].disabled = !active;
+  }
+
+  for (i = 0; i < inputElements.length; i++) {
+    inputElements[i].disabled = !active;
+  }
+
+  for (i = 0; i < selectElements.length; i++) {
+    selectElements[i].disabled = !active;
+  }
+
+  addressInputElement.disabled = true;
 };
 
-showMockCards();
+var setAddress = function () {
+  var x = mapPinMainElement.offsetLeft + Math.round(mapPinMainElement.offsetWidth / 2);
+  var y = mapPinMainElement.offsetTop + mapPinMainElement.offsetHeight + MAIN_PIN_OFFSET_Y;
+  addressInputElement.value = x + ', ' + y;
+};
+
+var mapPinMainClickHandler = function () {
+  if (!pageState) {
+    setPageState(true);
+    showMapPins(cards);
+  }
+};
+
+var mapPinMainMouseUpHandler = function () {
+  setAddress();
+};
+
+setPageState(false);
+var cards = generateMockCards(8);
+setAddress();
+mapPinMainElement.addEventListener('click', mapPinMainClickHandler);
+mapPinMainElement.addEventListener('mouseup', mapPinMainMouseUpHandler);
