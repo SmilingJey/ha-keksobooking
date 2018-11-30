@@ -53,6 +53,7 @@ var setAvailableCapacity = function () {
   for (var i = 0; i < capacityOptionElements.length; i++) {
     capacityOptionElements[i].disabled = !checkCapacityForRoom(roomNumber, capacityOptionElements[i].value);
   }
+  validateCapacity();
 };
 
 selectRoomNumberElement.addEventListener('change', function () {
