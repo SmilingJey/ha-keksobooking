@@ -237,8 +237,6 @@ var setPageState = function (active) {
   for (i = 0; i < selectElements.length; i++) {
     selectElements[i].disabled = !active;
   }
-
-  addressInputElement.disabled = true;
 };
 
 var setAddress = function () {
