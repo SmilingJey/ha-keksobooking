@@ -27,8 +27,8 @@ var MOCK_CARD_ROOMS_COUNT_MAX = 5;
 var MOCK_CARD_PRICE_MIN = 1000;
 var MOCK_CARD_PRICE_MAX = 1000000;
 
-var LOCATION_Y_MIN = 130;
-var LOCATION_Y_MAX = 630;
+var ADDRESS_Y_MIN = 130;
+var ADDRESS_Y_MAX = 630;
 
 var GUESTS_COUNT_MIN = 0;
 var GUESTS_COUNT_MAX = 3;
@@ -72,7 +72,7 @@ var generateMockCards = function (count) {
   for (var i = 0; i < count; i++) {
     var mapWidth = mapElement.offsetWidth;
     var locationX = getRandomInt(0, mapWidth);
-    var locationY = getRandomInt(LOCATION_Y_MIN, LOCATION_Y_MAX);
+    var locationY = getRandomInt(ADDRESS_Y_MIN, ADDRESS_Y_MAX);
     var cardTypes = Object.keys(CardType);
 
     cards.push({
@@ -290,10 +290,14 @@ mapPinMainElement.addEventListener('mousedown', function (evt) {
       newCoords.x = 0;
     }
 
-    if (newCoords.y > LOCATION_Y_MAX) {
-      newCoords.y = LOCATION_Y_MAX;
-    } else if (newCoords.y < LOCATION_Y_MIN) {
-      newCoords.y = LOCATION_Y_MIN;
+    var mainPinHeight = mapPinMainElement.offsetHeight;
+    var maxPosition = ADDRESS_Y_MAX - mainPinHeight - MAIN_PIN_OFFSET_Y;
+    var minPosition = ADDRESS_Y_MIN - mainPinHeight - MAIN_PIN_OFFSET_Y;
+
+    if (newCoords.y > maxPosition) {
+      newCoords.y = maxPosition;
+    } else if (newCoords.y < minPosition) {
+      newCoords.y = minPosition;
     }
 
     mapPinMainElement.style.top = newCoords.y + 'px';
