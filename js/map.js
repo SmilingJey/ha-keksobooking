@@ -27,8 +27,8 @@ var MOCK_CARD_ROOMS_COUNT_MAX = 5;
 var MOCK_CARD_PRICE_MIN = 1000;
 var MOCK_CARD_PRICE_MAX = 1000000;
 
-var LOCATION_Y_MIN = 130;
-var LOCATION_Y_MAX = 630;
+var ADDRESS_Y_MIN = 130;
+var ADDRESS_Y_MAX = 630;
 
 var GUESTS_COUNT_MIN = 0;
 var GUESTS_COUNT_MAX = 3;
@@ -72,7 +72,7 @@ var generateMockCards = function (count) {
   for (var i = 0; i < count; i++) {
     var mapWidth = mapElement.offsetWidth;
     var locationX = getRandomInt(0, mapWidth);
-    var locationY = getRandomInt(LOCATION_Y_MIN, LOCATION_Y_MAX);
+    var locationY = getRandomInt(ADDRESS_Y_MIN, ADDRESS_Y_MAX);
     var cardTypes = Object.keys(CardType);
 
     cards.push({
@@ -245,19 +245,82 @@ var setAddress = function () {
   addressInputElement.value = x + ', ' + y;
 };
 
-var mapPinMainClickHandler = function () {
+setPageState(false);
+setAddress();
+
+mapPinMainElement.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
   if (!pageState) {
     setPageState(true);
-    showMapPins(cards);
+    showMapPins(generateMockCards(8));
   }
-};
 
-var mapPinMainMouseUpHandler = function () {
-  setAddress();
-};
+  var dragged = false;
 
-setPageState(false);
-var cards = generateMockCards(8);
-setAddress();
-mapPinMainElement.addEventListener('click', mapPinMainClickHandler);
-mapPinMainElement.addEventListener('mouseup', mapPinMainMouseUpHandler);
+  var onMouseMove = function (moveEvt) {
+
+    moveEvt.preventDefault();
+    dragged = true;
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    var newCoords = {
+      x: mapPinMainElement.offsetLeft - shift.x,
+      y: mapPinMainElement.offsetTop - shift.y
+    };
+
+    var mapWidth = mapElement.offsetWidth - mapPinMainElement.offsetWidth;
+    if (newCoords.x > mapWidth) {
+      newCoords.x = mapWidth;
+    } else if (newCoords.x < 0) {
+      newCoords.x = 0;
+    }
+
+    var mainPinHeight = mapPinMainElement.offsetHeight;
+    var maxPosition = ADDRESS_Y_MAX - mainPinHeight - MAIN_PIN_OFFSET_Y;
+    var minPosition = ADDRESS_Y_MIN - mainPinHeight - MAIN_PIN_OFFSET_Y;
+
+    if (newCoords.y > maxPosition) {
+      newCoords.y = maxPosition;
+    } else if (newCoords.y < minPosition) {
+      newCoords.y = minPosition;
+    }
+
+    mapPinMainElement.style.top = newCoords.y + 'px';
+    mapPinMainElement.style.left = newCoords.x + 'px';
+
+    setAddress();
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+    setAddress();
+    if (dragged) {
+      var onClickPreventDefault = function (clickEvt) {
+        clickEvt.preventDefault();
+        mapPinMainElement.removeEventListener('click', onClickPreventDefault);
+      };
+      mapPinMainElement.addEventListener('click', onClickPreventDefault);
+    }
+
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
