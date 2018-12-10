@@ -6,19 +6,16 @@
 
   window.pageState = {
     setState: function (pageState) {
-      if (pageState && !state) {
-        window.data.loadCards();
-      }
 
       window.form.setState(pageState);
-
       if (pageState) {
         mapElement.classList.remove('map--faded');
+        window.pins.loadPins();
       } else {
         mapElement.classList.add('map--faded');
-        window.card.closeCard();
         window.mainPin.resetPosition();
         window.pins.removePins();
+        window.card.closeCard();
       }
 
       state = pageState;

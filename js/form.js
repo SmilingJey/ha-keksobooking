@@ -17,7 +17,6 @@
   var capacityOptionElements = selectCapacityElement.querySelectorAll('option');
   var checkinElement = adFormElement.querySelector('#timein');
   var checkoutElement = adFormElement.querySelector('#timeout');
-  var resetButtonElement = adFormElement.querySelector('.ad-form__reset');
 
   checkinElement.addEventListener('change', function () {
     checkoutElement.value = checkinElement.value;
@@ -76,8 +75,42 @@
     validateCapacity();
   });
 
-  resetButtonElement.addEventListener('click', function () {
+  adFormElement.addEventListener('reset', function () {
+    var inactivatePage = function () {
+      window.pageState.setState(false);
+    };
+
+    setTimeout(inactivatePage, 50);
+  });
+
+  var onSubmitError = function () {
+    var errorMessageTemplate = document.querySelector('#error')
+      .content
+      .querySelector('.error');
+    var errorMessageElement = errorMessageTemplate.cloneNode(true);
+    var errorButton = errorMessageElement.querySelector('.error__button');
+    errorButton.addEventListener('click', sendFormData);
+    window.util.showMessage(errorMessageElement);
+  };
+
+  var onSubmitSuccess = function () {
+    var successMessageTemplate = document.querySelector('#success')
+      .content
+      .querySelector('.success');
+    var successMessageElement = successMessageTemplate.cloneNode(true);
+    window.util.showMessage(successMessageElement);
+    adFormElement.reset();
     window.pageState.setState(false);
+  };
+
+  var sendFormData = function () {
+    var data = new FormData(adFormElement);
+    window.backend.saveForm(data, onSubmitSuccess, onSubmitError);
+  };
+
+  adFormElement.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    sendFormData();
   });
 
   window.form = {
