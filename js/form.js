@@ -99,7 +99,7 @@
       .querySelector('.success');
     var successMessageElement = successMessageTemplate.cloneNode(true);
     window.util.showMessage(successMessageElement);
-
+    adFormElement.reset();
     window.pageState.setState(false);
   };
 
