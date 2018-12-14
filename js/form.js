@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var PREVIEW_PHOTO_WIDTH = 70;
+  var PREVIEW_PHOTO_HEIGHT = 70;
+
   var MinPriceForType = {
     bungalo: '0',
     house: '5000',
@@ -155,8 +158,8 @@
             var imageElement = document.createElement('img');
             imageElement.src = e.target.result;
             imageElement.alt = 'выбранное фото';
-            /*imageElement.width = 70;
-            imageElement.height = 70;*/
+            imageElement.width = PREVIEW_PHOTO_WIDTH;
+            imageElement.height = PREVIEW_PHOTO_HEIGHT;
             photoElement.appendChild(imageElement);
             photoContainerElement.appendChild(photoElement);
           };
