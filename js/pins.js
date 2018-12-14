@@ -41,9 +41,9 @@
   var renderPins = function (cards) {
     removePins();
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < cards.length; i++) {
-      fragment.appendChild(createPin(cards[i]));
-    }
+    cards.forEach(function (card) {
+      fragment.appendChild(createPin(card));
+    });
     mapPinsElement.appendChild(fragment);
   };
 

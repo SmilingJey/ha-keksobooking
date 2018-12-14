@@ -71,9 +71,12 @@
       return false;
     }
 
+    if (!Array.isArray(card.offer.features)) {
+      return false;
+    }
     for (var i = 0; i < featureCheckboxElements.length; i++) {
-      if (featureCheckboxElements[i].checked && (!Array.isArray(card.offer.features) ||
-        card.offer.features.indexOf(featureCheckboxElements[i].value) === -1)) {
+      if (featureCheckboxElements[i].checked &&
+        card.offer.features.indexOf(featureCheckboxElements[i].value) === -1) {
         return false;
       }
     }
