@@ -92,10 +92,12 @@
   });
 
   window.mainPin = {
-    resetPosition: function () {
-      mapPinMainElement.style.top = '375px';
-      mapPinMainElement.style.left = '570px';
-      setAddress();
+    setState: function (active) {
+      if (!active) {
+        mapPinMainElement.style.top = '375px';
+        mapPinMainElement.style.left = '570px';
+        setAddress();
+      }
     }
   };
 })();

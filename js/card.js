@@ -27,6 +27,7 @@
       var mapCardElement = mapCardTemplateElement.cloneNode(true);
 
       var titleElement = mapCardElement.querySelector('.popup__title');
+      delete card.offer.title;
       if (card.offer.title) {
         titleElement.textContent = card.offer.title;
       } else {
@@ -34,6 +35,7 @@
       }
 
       var addressElement = mapCardElement.querySelector('.popup__text--address');
+      delete card.offer.address;
       if (card.offer.address) {
         addressElement.textContent = card.offer.address;
       } else {
@@ -41,7 +43,7 @@
       }
 
       var priceElement = mapCardElement.querySelector('.popup__text--price');
-      if (card.offer.price) {
+      if (card.offer.price !== undefined) {
         priceElement.textContent = card.offer.price + '₽/ночь';
       } else {
         mapCardElement.removeChild(priceElement);
@@ -55,15 +57,29 @@
       }
 
       var capacityElement = mapCardElement.querySelector('.popup__text--capacity');
-      if (card.offer.rooms || card.offer.guests) {
+      if (card.offer.rooms !== undefined || card.offer.guests !== undefined) {
         var capacity = '';
-        if (card.offer.rooms && card.offer.guests) {
-          capacity = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
-        } else if (card.offer.rooms && !card.offer.guests) {
-          capacity = card.offer.rooms + ' комнаты';
-        } else {
-          capacity = 'Для ' + card.offer.guests + ' гостей';
+        if (card.offer.rooms !== undefined) {
+
+          if (card.offer.rooms.toString() === '0') {
+            capacity = card.offer.rooms + ' комнат';
+          } else if (card.offer.rooms.toString() === '1') {
+            capacity = card.offer.rooms + ' комната';
+          } else {
+            capacity = card.offer.rooms + ' комнаты';
+          }
         }
+
+        if (card.offer.guests !== undefined) {
+          if (card.offer.guests.toString() === '0') {
+            capacity += ' не для гостей';
+          } else if (card.offer.guests.toString() === '1') {
+            capacity += ' для ' + card.offer.guests + ' гостя';
+          } else {
+            capacity += ' для ' + card.offer.guests + ' гостей';
+          }
+        }
+
         capacityElement.textContent = capacity;
       } else {
         mapCardElement.removeChild(capacityElement);
@@ -85,7 +101,7 @@
       }
 
       var featuresElement = mapCardElement.querySelector('.popup__features');
-      if (card.offer.features && card.offer.features > 0) {
+      if (Array.isArray(card.offer.features) && card.offer.features.length > 0) {
         while (featuresElement.firstChild) {
           featuresElement.removeChild(featuresElement.firstChild);
         }
@@ -110,7 +126,7 @@
       }
 
       var photosElement = mapCardElement.querySelector('.popup__photos');
-      if (card.offer.photos && card.offer.photos.length > 0) {
+      if (Array.isArray(card.offer.photos) && card.offer.photos.length > 0) {
         var photosImgElement = photosElement.querySelector('img');
         while (photosElement.firstChild) {
           photosElement.removeChild(photosElement.firstChild);
