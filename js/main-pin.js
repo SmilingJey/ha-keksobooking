@@ -4,15 +4,22 @@
   var ADDRESS_Y_MIN = 130;
   var ADDRESS_Y_MAX = 630;
   var MAIN_PIN_OFFSET_Y = 22;
+  var INIT_POSITION_TOP = '375px';
+  var INIT_POSITION_LEFT = '570px';
 
   var mapElement = document.querySelector('.map');
   var mapPinMainElement = document.querySelector('.map__pin--main');
-  var addressInputElement = document.querySelector('#address');
 
   var setAddress = function () {
     var x = mapPinMainElement.offsetLeft + Math.round(mapPinMainElement.offsetWidth / 2);
     var y = mapPinMainElement.offsetTop + mapPinMainElement.offsetHeight + MAIN_PIN_OFFSET_Y;
-    addressInputElement.value = x + ', ' + y;
+    window.form.setAddress(x, y);
+  };
+
+  var checkActiveState = function () {
+    if (!window.pageState.getState()) {
+      window.pageState.setState(true);
+    }
   };
 
   mapPinMainElement.addEventListener('mousedown', function (evt) {
@@ -23,16 +30,13 @@
       y: evt.clientY
     };
 
-    if (!window.pageState.getState()) {
-      window.pageState.setState(true);
-    }
-
     var dragged = false;
 
     var onMouseMove = function (moveEvt) {
-
       moveEvt.preventDefault();
       dragged = true;
+
+      checkActiveState();
 
       var shift = {
         x: startCoords.x - moveEvt.clientX,
@@ -76,6 +80,7 @@
       upEvt.preventDefault();
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
+      checkActiveState();
       setAddress();
       if (dragged) {
         var onClickPreventDefault = function (clickEvt) {
@@ -84,7 +89,6 @@
         };
         mapPinMainElement.addEventListener('click', onClickPreventDefault);
       }
-
     };
 
     document.addEventListener('mousemove', onMouseMove);
@@ -92,10 +96,12 @@
   });
 
   window.mainPin = {
-    resetPosition: function () {
-      mapPinMainElement.style.top = '375px';
-      mapPinMainElement.style.left = '570px';
-      setAddress();
+    setState: function (active) {
+      if (!active) {
+        mapPinMainElement.style.top = INIT_POSITION_TOP;
+        mapPinMainElement.style.left = INIT_POSITION_LEFT;
+        setAddress();
+      }
     }
   };
 })();

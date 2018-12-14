@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var PREVIEW_PHOTO_WIDTH = 70;
+  var PREVIEW_PHOTO_HEIGHT = 70;
+
   var MinPriceForType = {
     bungalo: '0',
     house: '5000',
@@ -17,6 +20,11 @@
   var capacityOptionElements = selectCapacityElement.querySelectorAll('option');
   var checkinElement = adFormElement.querySelector('#timein');
   var checkoutElement = adFormElement.querySelector('#timeout');
+  var addressInputElement = document.querySelector('#address');
+  var inputAvatarElement = adFormElement.querySelector('#avatar');
+  var avatarImageElement = adFormElement.querySelector('.ad-form-header__preview img');
+  var inputPhotoElement = adFormElement.querySelector('#images');
+  var photoContainerElement = adFormElement.querySelector('.ad-form__photo-container');
 
   checkinElement.addEventListener('change', function () {
     checkoutElement.value = checkinElement.value;
@@ -113,12 +121,64 @@
     sendFormData();
   });
 
+  var resetAvatarImages = function () {
+    avatarImageElement.src = 'img/muffin-grey.svg';
+  };
+
+  inputAvatarElement.addEventListener('change', function () {
+    if (inputAvatarElement.files && inputAvatarElement.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        avatarImageElement.src = e.target.result;
+      };
+      reader.readAsDataURL(inputAvatarElement.files[0]);
+    }
+  });
+
+  var removePhotosPreview = function () {
+    var photoElements = photoContainerElement.querySelectorAll('.ad-form__photo');
+    for (var i = 0; i < photoElements.length; i++) {
+      photoElements[i].parentNode.removeChild(photoElements[i]);
+    }
+  };
+
+  var createBlankPhotoElement = function () {
+    var blankPhoto = document.createElement('div');
+    blankPhoto.classList.add('ad-form__photo');
+    return blankPhoto;
+  };
+
+  inputPhotoElement.addEventListener('change', function () {
+    removePhotosPreview();
+    if (inputPhotoElement.files) {
+      for (var i = 0; i < inputPhotoElement.files.length; i++) {
+        if (inputPhotoElement.files[i]) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var photoElement = createBlankPhotoElement();
+            var imageElement = document.createElement('img');
+            imageElement.src = e.target.result;
+            imageElement.alt = 'выбранное фото';
+            imageElement.width = PREVIEW_PHOTO_WIDTH;
+            imageElement.height = PREVIEW_PHOTO_HEIGHT;
+            photoElement.appendChild(imageElement);
+            photoContainerElement.appendChild(photoElement);
+          };
+          reader.readAsDataURL(inputPhotoElement.files[i]);
+        }
+      }
+    }
+  });
+
   window.form = {
     setState: function (active) {
       if (active) {
         adFormElement.classList.remove('ad-form--disabled');
       } else {
         adFormElement.classList.add('ad-form--disabled');
+        resetAvatarImages();
+        removePhotosPreview();
+        photoContainerElement.appendChild(createBlankPhotoElement());
       }
 
       for (var i = 0; i < fieldsetElements.length; i++) {
@@ -128,6 +188,10 @@
       setAvailableCapacity();
       validateCapacity();
       setMinPrice();
+    },
+
+    setAddress: function (x, y) {
+      addressInputElement.value = x + ', ' + y;
     }
   };
 
