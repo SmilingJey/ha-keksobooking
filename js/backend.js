@@ -2,7 +2,7 @@
 
 (function () {
   var LOAD_CARDS_URL = 'https://js.dump.academy/keksobooking/data';
-  var SAVE_CARDS_URL = 'https://js.dump.academy/keksobooking';
+  var SAVE_FORM_URL = 'https://js.dump.academy/keksobooking';
   var TIMEOUT = 10000;
   var HTTP_OK = 200;
 
@@ -21,6 +21,7 @@
     xhr.addEventListener('error', function () {
       onError('Произошла ошибка соединения');
     });
+
     xhr.addEventListener('timeout', function () {
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
@@ -37,7 +38,7 @@
     },
 
     saveForm: function (data, onLoad, onError) {
-      sendXMLHttpRequest('POST', SAVE_CARDS_URL, data, onLoad, onError);
+      sendXMLHttpRequest('POST', SAVE_FORM_URL, data, onLoad, onError);
     }
   };
 

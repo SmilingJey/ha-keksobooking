@@ -5,10 +5,12 @@
 
   window.pageState = {
     setState: function (pageState) {
-      window.form.setState(pageState);
-      window.pins.setState(pageState);
-      window.mainPin.setState(pageState);
-      state = pageState;
+      if (state !== pageState) {
+        window.form.setState(pageState);
+        window.pins.setState(pageState);
+        window.mainPin.setState(pageState);
+        state = pageState;
+      }
     },
 
     getState: function () {

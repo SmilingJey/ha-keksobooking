@@ -17,10 +17,8 @@
       };
 
       var closeMessage = function () {
-        if (messageElement) {
-          mainElement.removeChild(messageElement);
-          document.removeEventListener('keydown', onMessageEsc);
-        }
+        mainElement.removeChild(messageElement);
+        document.removeEventListener('keydown', onMessageEsc);
       };
 
       messageElement.addEventListener('click', closeMessage);

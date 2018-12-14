@@ -20,6 +20,7 @@
   var capacityOptionElements = selectCapacityElement.querySelectorAll('option');
   var checkinElement = adFormElement.querySelector('#timein');
   var checkoutElement = adFormElement.querySelector('#timeout');
+  var addressInputElement = document.querySelector('#address');
   var inputAvatarElement = adFormElement.querySelector('#avatar');
   var avatarImageElement = adFormElement.querySelector('.ad-form-header__preview img');
   var inputPhotoElement = adFormElement.querySelector('#images');
@@ -187,6 +188,10 @@
       setAvailableCapacity();
       validateCapacity();
       setMinPrice();
+    },
+
+    setAddress: function (x, y) {
+      addressInputElement.value = x + ', ' + y;
     }
   };
 

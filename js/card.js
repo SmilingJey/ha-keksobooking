@@ -11,14 +11,14 @@
   var mapElement = document.querySelector('.map');
 
   var onMapCardEsc = function (evt) {
-    window.util.isEscEvent(evt, window.card.closeCard);
+    window.util.isEscEvent(evt, window.card.close);
   };
 
   window.card = {
-    showCard: function (card) {
+    show: function (card) {
       var i;
 
-      window.card.closeCard();
+      window.card.close();
 
       var mapCardTemplateElement = document.querySelector('#card')
         .content
@@ -27,7 +27,6 @@
       var mapCardElement = mapCardTemplateElement.cloneNode(true);
 
       var titleElement = mapCardElement.querySelector('.popup__title');
-      delete card.offer.title;
       if (card.offer.title) {
         titleElement.textContent = card.offer.title;
       } else {
@@ -35,7 +34,6 @@
       }
 
       var addressElement = mapCardElement.querySelector('.popup__text--address');
-      delete card.offer.address;
       if (card.offer.address) {
         addressElement.textContent = card.offer.address;
       } else {
@@ -160,7 +158,7 @@
       document.addEventListener('keydown', onMapCardEsc);
     },
 
-    closeCard: function () {
+    close: function () {
       var mapCardElement = document.querySelector('.map__card');
       if (mapCardElement) {
         mapElement.removeChild(mapCardElement);
