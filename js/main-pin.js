@@ -16,6 +16,12 @@
     window.form.setAddress(x, y);
   };
 
+  var checkActiveState = function () {
+    if (!window.pageState.getState()) {
+      window.pageState.setState(true);
+    }
+  };
+
   mapPinMainElement.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
@@ -30,9 +36,7 @@
       moveEvt.preventDefault();
       dragged = true;
 
-      if (!window.pageState.getState()) {
-        window.pageState.setState(true);
-      }
+      checkActiveState();
 
       var shift = {
         x: startCoords.x - moveEvt.clientX,
@@ -76,6 +80,7 @@
       upEvt.preventDefault();
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
+      checkActiveState();
       setAddress();
       if (dragged) {
         var onClickPreventDefault = function (clickEvt) {
