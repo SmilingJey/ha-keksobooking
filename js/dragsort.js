@@ -2,8 +2,8 @@
 
 (function () {
   window.dragsort = {
-    enable: function (containerElement, dragElementClassName, onUpdate) {
-      var draggableElements = containerElement.querySelectorAll(dragElementClassName);
+    enable: function (containerElement, dragElementSelector) {
+      var draggableElements = containerElement.querySelectorAll(dragElementSelector);
       for (var i = 0; i < draggableElements.length; i++) {
         draggableElements.draggable = true;
       }
@@ -12,11 +12,10 @@
 
       var onDragOver = function (evt) {
         evt.preventDefault();
-        evt.dataTransfer.dropEffect = 'move';
         var target = evt.target;
-        if (target && target !== dragElement &&
-          target.classList.contains(dragElementClassName)) {
-          containerElement.insertBefore(dragElement, target.nextSibling || target);
+        var element = target.closest(dragElementSelector);
+        if (element && element !== dragElement) {
+          containerElement.insertBefore(dragElement, element.nextSibling || element);
         }
       };
 
@@ -24,18 +23,21 @@
         evt.preventDefault();
         containerElement.removeEventListener('dragover', onDragOver, false);
         containerElement.removeEventListener('dragend', onDragEnd, false);
-        if (onUpdate) {
-          onUpdate(dragElement);
+      };
+
+      var onDragStart = function (evt) {
+        var target = evt.target;
+        var element = target.closest(dragElementSelector);
+        if (element) {
+          dragElement = element;
+          evt.dataTransfer.effectAllowed = 'move';
+          evt.dataTransfer.setData('text/html', dragElement.textContent);
+          containerElement.addEventListener('dragover', onDragOver, false);
+          containerElement.addEventListener('dragend', onDragEnd, false);
         }
       };
 
-      containerElement.addEventListener('dragstart', function (evt) {
-        dragElement = evt.target;
-        evt.dataTransfer.effectAllowed = 'move';
-        evt.dataTransfer.setData('Text', dragElement.textContent);
-        containerElement.addEventListener('dragover', onDragOver, false);
-        containerElement.addEventListener('dragend', onDragEnd, false);
-      }, false);
+      containerElement.addEventListener('dragstart', onDragStart);
     }
   };
 })();
