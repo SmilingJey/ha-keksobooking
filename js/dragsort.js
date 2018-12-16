@@ -10,12 +10,27 @@
 
       var dragElement;
 
+      var insertAfter = function (elem, refElem) {
+        var parent = refElem.parentNode;
+        var next = refElem.nextSibling;
+        if (next) {
+          return parent.insertBefore(elem, next);
+        } else {
+          return parent.appendChild(elem);
+        }
+      };
+
       var onDragOver = function (evt) {
         evt.preventDefault();
         var target = evt.target;
         var element = target.closest(dragElementSelector);
         if (element && element !== dragElement) {
-          containerElement.insertBefore(dragElement, element.nextSibling || element);
+          if (element.offsetLeft > dragElement.offsetLeft) {
+            insertAfter(dragElement, element);
+          } else {
+            containerElement.insertBefore(dragElement, element);
+          }
+
         }
       };
 
