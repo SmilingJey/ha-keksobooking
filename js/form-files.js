@@ -86,14 +86,13 @@
   };
 
   var onLoadPhotoFile = function (e) {
-    var photoElement = createBlankPhotoElement();
     var imageElement = document.createElement('img');
     imageElement.src = e.target.result;
     imageElement.alt = 'выбранное фото';
     imageElement.width = PREVIEW_PHOTO_WIDTH;
     imageElement.height = PREVIEW_PHOTO_HEIGHT;
-    photoElement.appendChild(imageElement);
-    photoContainerElement.appendChild(photoElement);
+    imageElement.classList.add('ad-form__photo');
+    photoContainerElement.appendChild(imageElement);
   };
 
   var loadPhotoFiles = function (files) {
@@ -109,6 +108,7 @@
   inputPhotoElement.addEventListener('change', onChangePhotoFiles);
   setupDragZone(avatarDragZoneElement, loadAvatarFile);
   setupDragZone(photoDragZoneElement, loadPhotoFiles);
+  window.dragsort.enable(photoContainerElement, 'ad-form__photo');
 
   window.formFiles = {
     resetFileSelection: function () {
@@ -117,5 +117,4 @@
       photoContainerElement.appendChild(createBlankPhotoElement());
     }
   };
-
 })();

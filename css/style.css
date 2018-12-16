@@ -755,6 +755,7 @@ fieldset {
 }
 
 .ad-form__photo-container {
+  position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -777,7 +778,7 @@ fieldset {
 }
 
 .ad-form__upload:last-of-type {
-  margin-right: 0;
+  /* margin-right: 0; */
 }
 
 .ad-form__drop-zone {
@@ -806,6 +807,8 @@ fieldset {
 }
 
 .ad-form__photo {
+  display: block;
+
   margin-right: 10px;
   margin-bottom: 10px;
 

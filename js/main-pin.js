@@ -22,78 +22,28 @@
     }
   };
 
-  mapPinMainElement.addEventListener('mousedown', function (evt) {
-    evt.preventDefault();
+  var onMove = function (coords) {
+    mapPinMainElement.style.top = coords.y + 'px';
+    mapPinMainElement.style.left = coords.x + 'px';
+    checkActiveState();
+    setAddress();
+  };
 
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
+  var onMoveEnd = function () {
+    checkActiveState();
+    setAddress();
+  };
+
+  var getMoveConstraints = function () {
+    return {
+      left: 0,
+      right: mapElement.offsetWidth - mapPinMainElement.offsetWidth,
+      top: ADDRESS_Y_MIN - mapPinMainElement.offsetHeight - MAIN_PIN_OFFSET_Y,
+      bottom: ADDRESS_Y_MAX - mapPinMainElement.offsetHeight - MAIN_PIN_OFFSET_Y,
     };
+  };
 
-    var dragged = false;
-
-    var onMouseMove = function (moveEvt) {
-      moveEvt.preventDefault();
-      dragged = true;
-
-      checkActiveState();
-
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
-
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
-
-      var newCoords = {
-        x: mapPinMainElement.offsetLeft - shift.x,
-        y: mapPinMainElement.offsetTop - shift.y
-      };
-
-      var mapWidth = mapElement.offsetWidth - mapPinMainElement.offsetWidth;
-      if (newCoords.x > mapWidth) {
-        newCoords.x = mapWidth;
-      } else if (newCoords.x < 0) {
-        newCoords.x = 0;
-      }
-
-      var mainPinHeight = mapPinMainElement.offsetHeight;
-      var maxPosition = ADDRESS_Y_MAX - mainPinHeight - MAIN_PIN_OFFSET_Y;
-      var minPosition = ADDRESS_Y_MIN - mainPinHeight - MAIN_PIN_OFFSET_Y;
-
-      if (newCoords.y > maxPosition) {
-        newCoords.y = maxPosition;
-      } else if (newCoords.y < minPosition) {
-        newCoords.y = minPosition;
-      }
-
-      mapPinMainElement.style.top = newCoords.y + 'px';
-      mapPinMainElement.style.left = newCoords.x + 'px';
-
-      setAddress();
-    };
-
-    var onMouseUp = function (upEvt) {
-      upEvt.preventDefault();
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-      checkActiveState();
-      setAddress();
-      if (dragged) {
-        var onClickPreventDefault = function (clickEvt) {
-          clickEvt.preventDefault();
-          mapPinMainElement.removeEventListener('click', onClickPreventDefault);
-        };
-        mapPinMainElement.addEventListener('click', onClickPreventDefault);
-      }
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  });
+  window.draggable.setup(mapPinMainElement, getMoveConstraints, null, onMove, onMoveEnd);
 
   window.mainPin = {
     setState: function (active) {
