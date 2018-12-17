@@ -38,7 +38,7 @@
     roomsElement.addEventListener('change', onFilterChange);
     guestsElement.addEventListener('change', onFilterChange);
 
-    featureCheckboxElements.forEach(function (element) {
+    Array.from(featureCheckboxElements).forEach(function (element) {
       element.addEventListener('change', onFilterChange);
     });
   };
@@ -89,11 +89,11 @@
     setState: function (active) {
       filterFormElement.reset();
 
-      selectElements.forEach(function (element) {
+      Array.from(selectElements).forEach(function (element) {
         element.disabled = !active;
       });
 
-      fieldsetElements.forEach(function (element) {
+      Array.from(fieldsetElements).forEach(function (element) {
         element.disabled = !active;
       });
     },

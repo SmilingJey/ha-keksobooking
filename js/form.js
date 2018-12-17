@@ -53,7 +53,7 @@
 
   var setAvailableCapacity = function () {
     var roomNumber = selectRoomNumberElement.value;
-    capacityOptionElements.forEach(function (element) {
+    Array.from(capacityOptionElements).forEach(function (element) {
       element.disabled = !checkCapacityForRoomNumber(roomNumber, element.value);
     });
     validateCapacity();
@@ -123,7 +123,7 @@
         window.formFiles.resetFileSelection();
       }
 
-      fieldsetElements.forEach(function (element) {
+      Array.from(fieldsetElements).forEach(function (element) {
         element.disabled = !active;
       });
 
