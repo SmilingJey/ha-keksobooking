@@ -755,6 +755,7 @@ fieldset {
 }
 
 .ad-form__photo-container {
+  position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -806,6 +807,8 @@ fieldset {
 }
 
 .ad-form__photo {
+  display: block;
+
   margin-right: 10px;
   margin-bottom: 10px;
 
