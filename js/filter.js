@@ -38,9 +38,9 @@
     roomsElement.addEventListener('change', onFilterChange);
     guestsElement.addEventListener('change', onFilterChange);
 
-    for (var i = 0; i < featureCheckboxElements.length; i++) {
-      featureCheckboxElements[i].addEventListener('change', onFilterChange);
-    }
+    featureCheckboxElements.forEach(function (element) {
+      element.addEventListener('change', onFilterChange);
+    });
   };
 
   addFilterChangeListeners();
@@ -74,6 +74,7 @@
     if (!Array.isArray(card.offer.features)) {
       return false;
     }
+
     for (var i = 0; i < featureCheckboxElements.length; i++) {
       if (featureCheckboxElements[i].checked &&
         card.offer.features.indexOf(featureCheckboxElements[i].value) === -1) {
@@ -88,14 +89,13 @@
     setState: function (active) {
       filterFormElement.reset();
 
-      var i;
-      for (i = 0; i < selectElements.length; i++) {
-        selectElements[i].disabled = !active;
-      }
+      selectElements.forEach(function (element) {
+        element.disabled = !active;
+      });
 
-      for (i = 0; i < fieldsetElements.length; i++) {
-        fieldsetElements[i].disabled = !active;
-      }
+      fieldsetElements.forEach(function (element) {
+        element.disabled = !active;
+      });
     },
 
     filterCards: function (data, maxCount) {

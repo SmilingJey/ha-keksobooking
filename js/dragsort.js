@@ -4,9 +4,9 @@
   window.dragsort = {
     enable: function (containerElement, dragElementSelector) {
       var draggableElements = containerElement.querySelectorAll(dragElementSelector);
-      for (var i = 0; i < draggableElements.length; i++) {
-        draggableElements.draggable = true;
-      }
+      draggableElements.forEach(function (element) {
+        element.draggable = true;
+      });
 
       var dragElement;
 

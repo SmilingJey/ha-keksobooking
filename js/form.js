@@ -53,9 +53,9 @@
 
   var setAvailableCapacity = function () {
     var roomNumber = selectRoomNumberElement.value;
-    for (var i = 0; i < capacityOptionElements.length; i++) {
-      capacityOptionElements[i].disabled = !checkCapacityForRoomNumber(roomNumber, capacityOptionElements[i].value);
-    }
+    capacityOptionElements.forEach(function (element) {
+      element.disabled = !checkCapacityForRoomNumber(roomNumber, element.value);
+    });
     validateCapacity();
   };
 
@@ -123,9 +123,9 @@
         window.formFiles.resetFileSelection();
       }
 
-      for (var i = 0; i < fieldsetElements.length; i++) {
-        fieldsetElements[i].disabled = !active;
-      }
+      fieldsetElements.forEach(function (element) {
+        element.disabled = !active;
+      });
 
       setAvailableCapacity();
       validateCapacity();
