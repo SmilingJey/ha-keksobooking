@@ -74,9 +74,9 @@
 
   var removePhotosPreview = function () {
     var photoElements = photoContainerElement.querySelectorAll('.ad-form__photo');
-    for (var i = 0; i < photoElements.length; i++) {
-      photoElements[i].parentNode.removeChild(photoElements[i]);
-    }
+    photoElements.forEach(function (element) {
+      element.parentNode.removeChild(element);
+    });
   };
 
   var createBlankPhotoElement = function () {

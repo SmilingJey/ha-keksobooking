@@ -32,9 +32,9 @@
 
   var removePins = function () {
     var pins = mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < pins.length; i++) {
-      mapPinsElement.removeChild(pins[i]);
-    }
+    pins.forEach(function (element) {
+      mapPinsElement.removeChild(element);
+    });
     window.card.close();
   };
 
