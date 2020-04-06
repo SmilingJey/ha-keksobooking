@@ -7,11 +7,8 @@
   var HTTP_OK = 200;
 
   var sendXMLHttpRequest = function (type, url, data, onLoad, onError) {
-    var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
-    //var xhr = new XMLHttpRequest();
-    var xhr = new XHR();
+    var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
-    xhr.withCredentials = true;
 
     xhr.addEventListener('load', function () {
       if (xhr.status === HTTP_OK) {
